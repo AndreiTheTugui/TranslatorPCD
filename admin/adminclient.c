@@ -29,9 +29,8 @@ int main() {
     }
 
     printf("Enter command: ");
-    fgets(command, BUFFER_SIZE, stdin); 
-
-
+    fgets(command, BUFFER_SIZE, stdin);
+    
     command[strcspn(command, "\n")] = '\0';
 
     if (send(sock, command, strlen(command), 0) < 0) {
@@ -39,7 +38,6 @@ int main() {
         close(sock);
         return -1;
     }
-    printf("Sent command: %s\n", command);
 
     ssize_t bytes_received = read(sock, buffer, BUFFER_SIZE);
     if (bytes_received < 0) {
