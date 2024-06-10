@@ -11,7 +11,6 @@ void handle_admin_command(const char* command, char* response, size_t response_s
         snprintf(response, response_size, "Server is running.");
     } else if (strcmp(command, "stop") == 0) {
         snprintf(response, response_size, "Server will stop.");
-        // You can implement additional logic to stop the server if needed.
     } else {
         snprintf(response, response_size, "Unknown command.");
     }
