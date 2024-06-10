@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Translator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="upload-area" id="uploadArea" onclick="uploadFile()">
+            <div id="fileIcon" style="display: none;">
+                <img id="filePreview" alt="File Icon" width="100" height="100">
+                <p id="fileName"></p>
+                <div class="close-button" onclick="resetUpload(event)">&#x2716;</div>
+            </div>
+            <p id="uploadText">Click to upload a file</p>
+        </div>
+        <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload(event)">
+        <div class="options-area" id="optionsArea" style="display: none;">
+            <label for="language">Select target language:</label>
+            <select id="language" onchange="hideDownloadButton()">
+                <option value="en">English</option>
+                <option value="fr">French</option>
+                <option value="es">Spanish</option>
+                <!-- Add more languages as needed -->
+            </select>
+            <label for="format">Select output format:</label>
+            <select id="format" onchange="hideDownloadButton()">
+                <option value="pdf">PDF</option>
+                <option value="docx">DOCX</option>
+                <option value="txt">TXT</option>
+                <!-- Add more formats as needed -->
+            </select>
+            <div class="buttons">
+                <button id="generateButton" onclick="generateFile()">Generate</button>
+                <button id="downloadButton" style="display: none;" onclick="downloadFile()">Download</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

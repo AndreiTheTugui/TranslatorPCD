@@ -1,0 +1,122 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    text-align: center;
+}
+
+.upload-area {
+    width: 500px;
+    height: 400px;
+    border: 2px dashed #ccc;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #fff;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+}
+
+.upload-area.disabled {
+    pointer-events: none;
+}
+
+.upload-area p {
+    margin: 0;
+    font-size: 18px;
+    color: #666;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.options-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 500px;
+}
+
+label {
+    font-weight: bold;
+}
+
+select, button {
+    margin-top: 5px;
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+button {
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    flex: 1;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#fileIcon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: transparent; /* Asigură fundal transparent */
+}
+
+#fileName {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 200px;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto; /* Make sure the close button is always clickable */
+}
