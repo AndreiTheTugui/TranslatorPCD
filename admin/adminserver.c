@@ -24,6 +24,7 @@ void* translation_service(void* arg) {
     printf("Translation service stopped.\n");
     return NULL;
 }
+
 bool is_banned(const char* user) {
     for (int i = 0; i < banned_user_count; i++) {
         if (strcmp(banned_users[i], user) == 0) {
@@ -32,37 +33,38 @@ bool is_banned(const char* user) {
     }
     return false;
 }
-void handle_admin_command(const char* command, char* response, size_t response_size, const char* user) {
+
+void handle_admin_command(const char* command, char* response) {
     if (strcmp(command, "status") == 0) {
-        snprintf(response, response_size, "Translation service is %s.", 
+        snprintf(response, BUFFER_SIZE, "Translation service is %s.", 
                  translation_service_running ? "running" : "stopped");
     } else if (strcmp(command, "start") == 0) {
         if (!translation_service_running) {
             translation_service_running = 1;
             pthread_create(&translation_service_thread, NULL, translation_service, NULL);
-            snprintf(response, response_size, "Translation service started.");
+            snprintf(response, BUFFER_SIZE, "Translation service started.");
         } else {
-            snprintf(response, response_size, "Translation service is already running.");
+            snprintf(response, BUFFER_SIZE, "Translation service is already running.");
         }
     } else if (strcmp(command, "stop") == 0) {
         if (translation_service_running) {
             translation_service_running = 0;
             pthread_join(translation_service_thread, NULL);
-            snprintf(response, response_size, "Translation service stopped.");
+            snprintf(response, BUFFER_SIZE, "Translation service stopped.");
         } else {
-            snprintf(response, response_size, "Translation service is not running.");
+            snprintf(response, BUFFER_SIZE, "Translation service is not running.");
         }
     } else if (strncmp(command, "ban ", 4) == 0) {
         const char* user_to_ban = command + 4;
         if (banned_user_count < MAX_BANNED_USERS) {
             strncpy(banned_users[banned_user_count], user_to_ban, BUFFER_SIZE);
             banned_user_count++;
-            snprintf(response, response_size, "User %s banned.", user_to_ban);
+            snprintf(response, BUFFER_SIZE, "User %s banned.", user_to_ban);
         } else {
-            snprintf(response, response_size, "Banned user list is full.");
+            snprintf(response, BUFFER_SIZE, "Banned user list is full.");
         }
     } else {
-        snprintf(response, response_size, "Unknown command.");
+        snprintf(response, BUFFER_SIZE, "Unknown command.");
     }
 }
 
@@ -72,7 +74,7 @@ int main() {
     int addrlen = sizeof(address);
     char buffer[BUFFER_SIZE] = {0};
     char response[BUFFER_SIZE] = {0};
-    char client_id[BUFFER_SIZE]; 
+    char *client_command; 
 
     if ((server_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == 0) {
         perror("socket failed");
@@ -104,19 +106,12 @@ int main() {
         }
 
         read(new_socket, buffer, BUFFER_SIZE);
-        sscanf(buffer, "%s", client_id); 
-        printf("Connection from %s\n", client_id);
-
-        if (is_banned(client_id)) {
-            snprintf(response, sizeof(response), "Access denied. You are banned.");
-            send(new_socket, response, strlen(response), 0);
-            close(new_socket);
-            continue;
-        }
-
         printf("Received command: %s\n", buffer);
 
-        handle_admin_command(buffer, response, sizeof(response), client_id);
+        
+        client_command = strtok(buffer, " ");
+
+        handle_admin_command(client_command, response);
         send(new_socket, response, strlen(response), 0);
 
         close(new_socket);
