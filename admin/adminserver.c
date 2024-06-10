@@ -2,18 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/un.h>
 #include <pthread.h>
 #include <stdbool.h>
 
-#define ADMIN_PORT 9090
+#define SOCKET_PATH "/tmp/admin_socket"
 #define BUFFER_SIZE 1024
 #define MAX_BANNED_USERS 100
 
 int translation_service_running = 0;
 pthread_t translation_service_thread;
-char banned_users[MAX_BANNED_USERS][INET_ADDRSTRLEN];
+char banned_users[MAX_BANNED_USERS][BUFFER_SIZE];
 int banned_user_count = 0;
 
 void* translation_service(void* arg) {
@@ -24,17 +24,15 @@ void* translation_service(void* arg) {
     printf("Translation service stopped.\n");
     return NULL;
 }
-
-bool is_banned(const char* ip_address) {
+bool is_banned(const char* user) {
     for (int i = 0; i < banned_user_count; i++) {
-        if (strcmp(banned_users[i], ip_address) == 0) {
+        if (strcmp(banned_users[i], user) == 0) {
             return true;
         }
     }
     return false;
 }
-
-void handle_admin_command(const char* command, char* response, size_t response_size, const char* client_ip) {
+void handle_admin_command(const char* command, char* response, size_t response_size, const char* user) {
     if (strcmp(command, "status") == 0) {
         snprintf(response, response_size, "Translation service is %s.", 
                  translation_service_running ? "running" : "stopped");
@@ -55,11 +53,11 @@ void handle_admin_command(const char* command, char* response, size_t response_s
             snprintf(response, response_size, "Translation service is not running.");
         }
     } else if (strncmp(command, "ban ", 4) == 0) {
-        const char* ip_to_ban = command + 4;
+        const char* user_to_ban = command + 4;
         if (banned_user_count < MAX_BANNED_USERS) {
-            strncpy(banned_users[banned_user_count], ip_to_ban, INET_ADDRSTRLEN);
+            strncpy(banned_users[banned_user_count], user_to_ban, BUFFER_SIZE);
             banned_user_count++;
-            snprintf(response, response_size, "User %s banned.", ip_to_ban);
+            snprintf(response, response_size, "User %s banned.", user_to_ban);
         } else {
             snprintf(response, response_size, "Banned user list is full.");
         }
@@ -70,20 +68,20 @@ void handle_admin_command(const char* command, char* response, size_t response_s
 
 int main() {
     int server_fd, new_socket;
-    struct sockaddr_in address;
+    struct sockaddr_un address;
     int addrlen = sizeof(address);
     char buffer[BUFFER_SIZE] = {0};
     char response[BUFFER_SIZE] = {0};
-    char client_ip[INET_ADDRSTRLEN];
+    char client_id[BUFFER_SIZE]; 
 
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+    if ((server_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == 0) {
         perror("socket failed");
         exit(EXIT_FAILURE);
     }
 
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(ADMIN_PORT);
+    address.sun_family = AF_UNIX;
+    strncpy(address.sun_path, SOCKET_PATH, sizeof(address.sun_path) - 1);
+    unlink(SOCKET_PATH); 
 
     if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
         perror("bind failed");
@@ -97,7 +95,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    printf("Admin server listening on port %d\n", ADMIN_PORT);
+    printf("Admin server listening on %s\n", SOCKET_PATH);
 
     while (1) {
         if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
@@ -105,25 +103,26 @@ int main() {
             continue;
         }
 
-        inet_ntop(AF_INET, &address.sin_addr, client_ip, INET_ADDRSTRLEN);
-        printf("Connection from %s\n", client_ip);
+        read(new_socket, buffer, BUFFER_SIZE);
+        sscanf(buffer, "%s", client_id); 
+        printf("Connection from %s\n", client_id);
 
-        if (is_banned(client_ip)) {
+        if (is_banned(client_id)) {
             snprintf(response, sizeof(response), "Access denied. You are banned.");
             send(new_socket, response, strlen(response), 0);
             close(new_socket);
             continue;
         }
 
-        read(new_socket, buffer, BUFFER_SIZE);
         printf("Received command: %s\n", buffer);
 
-        handle_admin_command(buffer, response, sizeof(response), client_ip);
+        handle_admin_command(buffer, response, sizeof(response), client_id);
         send(new_socket, response, strlen(response), 0);
 
         close(new_socket);
     }
 
     close(server_fd);
+    unlink(SOCKET_PATH);
     return 0;
 }
