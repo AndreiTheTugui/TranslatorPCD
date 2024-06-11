@@ -50,13 +50,13 @@ function handleFileUpload(event) {
                     });
             };
             reader.readAsText(file);
+
         } else {
             alert('Invalid file format. Please upload a PDF, DOCX, or TXT file.');
             fileInput.value = '';  // Reset the file input
         }
     }
 }
-
 
 function resetUpload(event) {
     event.stopPropagation(); // Prevent the click from triggering the file input
