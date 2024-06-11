@@ -35,6 +35,22 @@ function handleFileUpload(event) {
             uploadArea.style.marginRight = '20px';
             uploadArea.classList.add('disabled'); // Disable further clicks except close button
             optionsArea.style.display = 'flex';
+
+            // Read file content and translate
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const fileContent = event.target.result;
+                translateFile(fileContent)
+                    .then(translatedContent => {
+                        // Handle translated content, e.g., display or download
+                        console.log(translatedContent);
+                    })
+                    .catch(error => {
+                        alert('Translation failed: ' + error);
+                    });
+            };
+            reader.readAsText(file);
+
         } else {
             alert('Invalid file format. Please upload a PDF, DOCX, or TXT file.');
             fileInput.value = '';  // Reset the file input
@@ -80,4 +96,26 @@ function downloadFile() {
 function hideDownloadButton() {
     const downloadButton = document.getElementById('downloadButton');
     downloadButton.style.display = 'none';
+}
+
+function translateFile(fileContent) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://localhost:8080', true); // Assuming your gSOAP service is running locally on port 8080
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    resolve(xhr.responseText);
+                } else {
+                    reject(xhr.statusText);
+                }
+            }
+        };
+        xhr.send(JSON.stringify({ fileContent: fileContent }));
+    });
+}
+
+function displayTranslatedContent(translatedContent) {
+    document.getElementById('translatedContent').textContent = translatedContent;
 }
