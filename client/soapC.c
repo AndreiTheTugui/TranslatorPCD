@@ -18,7 +18,11 @@ A commercial use license is available from Genivia Inc., contact@genivia.com
 
 #include "soapH.h"
 
+<<<<<<< Updated upstream
 SOAP_SOURCE_STAMP("@(#) soapC.c ver 2.8.91 2024-06-10 21:39:01 GMT")
+=======
+SOAP_SOURCE_STAMP("@(#) soapC.c ver 2.8.91 2024-06-11 21:37:49 GMT")
+>>>>>>> Stashed changes
 
 
 #ifndef WITH_NOGLOBAL
@@ -187,6 +191,13 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, const char *tag,
 		return soap_in_byte(soap, tag, NULL, "xsd:byte");
 	case SOAP_TYPE_int:
 		return soap_in_int(soap, tag, NULL, "xsd:int");
+<<<<<<< Updated upstream
+=======
+	case SOAP_TYPE_PointerTostring:
+		return soap_in_PointerTostring(soap, tag, NULL, "xsd:string");
+	case SOAP_TYPE_PointerTo_ns1__translateFile:
+		return soap_in_PointerTo_ns1__translateFile(soap, tag, NULL, "ns1:translateFile");
+>>>>>>> Stashed changes
 	case SOAP_TYPE__QName:
 	{	char **s;
 		s = soap_in__QName(soap, tag, NULL, "xsd:QName");
@@ -225,6 +236,13 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_getelement(struct soap *soap, const char *tag,
 			return s ? *s : NULL;
 		}
 		t = soap->tag;
+<<<<<<< Updated upstream
+=======
+		if (!soap_match_tag(soap, t, "ns1:translateFile"))
+		{	*type = SOAP_TYPE__ns1__translateFile;
+			return soap_in__ns1__translateFile(soap, NULL, NULL, NULL);
+		}
+>>>>>>> Stashed changes
 #ifndef WITH_NOIDREF
 	}
 #endif
@@ -280,6 +298,15 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_putelement(struct soap *soap, const void *ptr, co
 		return soap_out_byte(soap, tag, id, (const char *)ptr, "xsd:byte");
 	case SOAP_TYPE_int:
 		return soap_out_int(soap, tag, id, (const int *)ptr, "xsd:int");
+<<<<<<< Updated upstream
+=======
+	case SOAP_TYPE__ns1__translateFile:
+		return soap_out__ns1__translateFile(soap, "ns1:translateFile", id, (const struct _ns1__translateFile *)ptr, "");
+	case SOAP_TYPE_PointerTostring:
+		return soap_out_PointerTostring(soap, tag, id, (char **const*)ptr, "xsd:string");
+	case SOAP_TYPE_PointerTo_ns1__translateFile:
+		return soap_out_PointerTo_ns1__translateFile(soap, tag, id, (struct _ns1__translateFile *const*)ptr, "ns1:translateFile");
+>>>>>>> Stashed changes
 	case SOAP_TYPE__QName:
 		return soap_out_string(soap, tag, id, (char*const*)(void*)&ptr, "xsd:QName");
 	case SOAP_TYPE_string:
@@ -297,6 +324,24 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_markelement(struct soap *soap, const void *ptr, 
 	(void)soap; (void)ptr; (void)type; /* appease -Wall -Werror */
 	switch (type)
 	{
+<<<<<<< Updated upstream
+=======
+	case SOAP_TYPE___ns1__translateFile:
+		soap_serialize___ns1__translateFile(soap, (const struct __ns1__translateFile *)ptr);
+		break;
+	case SOAP_TYPE___ns1__translateFileResponse:
+		soap_serialize___ns1__translateFileResponse(soap, (const struct __ns1__translateFileResponse *)ptr);
+		break;
+	case SOAP_TYPE__ns1__translateFile:
+		soap_serialize__ns1__translateFile(soap, (const struct _ns1__translateFile *)ptr);
+		break;
+	case SOAP_TYPE_PointerTostring:
+		soap_serialize_PointerTostring(soap, (char **const*)ptr);
+		break;
+	case SOAP_TYPE_PointerTo_ns1__translateFile:
+		soap_serialize_PointerTo_ns1__translateFile(soap, (struct _ns1__translateFile *const*)ptr);
+		break;
+>>>>>>> Stashed changes
 	case SOAP_TYPE__QName:
 		soap_serialize_string(soap, (char*const*)(void*)&ptr);
 		break;
@@ -941,6 +986,260 @@ SOAP_FMAC3 struct SOAP_ENV__Header * SOAP_FMAC4 soap_get_SOAP_ENV__Header(struct
 
 #endif
 
+<<<<<<< Updated upstream
+=======
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns1__translateFile(struct soap *soap, struct __ns1__translateFile *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	a->ns1__translateFile = NULL;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns1__translateFile(struct soap *soap, const struct __ns1__translateFile *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+#ifndef WITH_NOIDREF
+	soap_serialize_PointerTo_ns1__translateFile(soap, &a->ns1__translateFile);
+#endif
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns1__translateFile(struct soap *soap, const char *tag, int id, const struct __ns1__translateFile *a, const char *type)
+{
+	(void)soap; (void)tag; (void)id; (void)a; (void)type; /* appease -Wall -Werror */
+	if (soap_out_PointerTo_ns1__translateFile(soap, "ns1:translateFile", -1, &a->ns1__translateFile, ""))
+		return soap->error;
+	return SOAP_OK;
+}
+
+SOAP_FMAC3 struct __ns1__translateFile * SOAP_FMAC4 soap_in___ns1__translateFile(struct soap *soap, const char *tag, struct __ns1__translateFile *a, const char *type)
+{
+	size_t soap_flag_ns1__translateFile = 1;
+	short soap_flag;
+	(void)tag; (void)type; /* appease -Wall -Werror */
+	a = (struct __ns1__translateFile*)soap_id_enter(soap, "", a, SOAP_TYPE___ns1__translateFile, sizeof(struct __ns1__translateFile), NULL, NULL, NULL, NULL);
+	if (!a)
+		return NULL;
+	soap_default___ns1__translateFile(soap, a);
+		for (soap_flag = 0;; soap_flag = 1)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap_flag_ns1__translateFile && soap->error == SOAP_TAG_MISMATCH)
+			{	if (soap_in_PointerTo_ns1__translateFile(soap, "ns1:translateFile", &a->ns1__translateFile, ""))
+				{	soap_flag_ns1__translateFile--;
+					continue;
+				}
+			}
+			if (soap->error == SOAP_TAG_MISMATCH && soap_flag)
+			{	soap->error = SOAP_OK;
+				break;
+			}
+			if (soap_flag && soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+	return a;
+}
+
+SOAP_FMAC3 struct __ns1__translateFile * SOAP_FMAC4 soap_new___ns1__translateFile(struct soap *soap, int n)
+{
+	struct __ns1__translateFile *p;
+	struct __ns1__translateFile *a = (struct __ns1__translateFile*)soap_malloc((soap), (n = (n < 0 ? 1 : n)) * sizeof(struct __ns1__translateFile));
+	for (p = a; p && n--; p++)
+		soap_default___ns1__translateFile(soap, p);
+	return a;
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns1__translateFile(struct soap *soap, const struct __ns1__translateFile *a, const char *tag, const char *type)
+{
+	if (soap_out___ns1__translateFile(soap, tag ? tag : "-ns1:translateFile", -2, a, type))
+		return soap->error;
+	return SOAP_OK;
+}
+
+SOAP_FMAC3 struct __ns1__translateFile * SOAP_FMAC4 soap_get___ns1__translateFile(struct soap *soap, struct __ns1__translateFile *p, const char *tag, const char *type)
+{
+	if ((p = soap_in___ns1__translateFile(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns1__translateFileResponse(struct soap *soap, struct __ns1__translateFileResponse *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	a->ns1__translatedContent = NULL;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns1__translateFileResponse(struct soap *soap, const struct __ns1__translateFileResponse *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+#ifndef WITH_NOIDREF
+	soap_serialize_PointerTostring(soap, &a->ns1__translatedContent);
+#endif
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns1__translateFileResponse(struct soap *soap, const char *tag, int id, const struct __ns1__translateFileResponse *a, const char *type)
+{
+	(void)soap; (void)tag; (void)id; (void)a; (void)type; /* appease -Wall -Werror */
+	if (a->ns1__translatedContent)
+		soap_element_result(soap, "ns1:translatedContent");
+	if (soap_out_PointerTostring(soap, "ns1:translatedContent", -1, &a->ns1__translatedContent, ""))
+		return soap->error;
+	return SOAP_OK;
+}
+
+SOAP_FMAC3 struct __ns1__translateFileResponse * SOAP_FMAC4 soap_in___ns1__translateFileResponse(struct soap *soap, const char *tag, struct __ns1__translateFileResponse *a, const char *type)
+{
+	size_t soap_flag_ns1__translatedContent = 1;
+	short soap_flag;
+	(void)tag; (void)type; /* appease -Wall -Werror */
+	a = (struct __ns1__translateFileResponse*)soap_id_enter(soap, "", a, SOAP_TYPE___ns1__translateFileResponse, sizeof(struct __ns1__translateFileResponse), NULL, NULL, NULL, NULL);
+	if (!a)
+		return NULL;
+	soap_default___ns1__translateFileResponse(soap, a);
+		for (soap_flag = 0;; soap_flag = 1)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap_flag_ns1__translatedContent && soap->error == SOAP_TAG_MISMATCH)
+			{	if (soap_in_PointerTostring(soap, "ns1:translatedContent", &a->ns1__translatedContent, "xsd:string"))
+				{	soap_flag_ns1__translatedContent--;
+					continue;
+				}
+			}
+			soap_check_result(soap, "ns1:translatedContent");
+			if (soap->error == SOAP_TAG_MISMATCH && soap_flag)
+			{	soap->error = SOAP_OK;
+				break;
+			}
+			if (soap_flag && soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+	return a;
+}
+
+SOAP_FMAC3 struct __ns1__translateFileResponse * SOAP_FMAC4 soap_new___ns1__translateFileResponse(struct soap *soap, int n)
+{
+	struct __ns1__translateFileResponse *p;
+	struct __ns1__translateFileResponse *a = (struct __ns1__translateFileResponse*)soap_malloc((soap), (n = (n < 0 ? 1 : n)) * sizeof(struct __ns1__translateFileResponse));
+	for (p = a; p && n--; p++)
+		soap_default___ns1__translateFileResponse(soap, p);
+	return a;
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns1__translateFileResponse(struct soap *soap, const struct __ns1__translateFileResponse *a, const char *tag, const char *type)
+{
+	if (soap_out___ns1__translateFileResponse(soap, tag ? tag : "-ns1:translateFileResponse", -2, a, type))
+		return soap->error;
+	return SOAP_OK;
+}
+
+SOAP_FMAC3 struct __ns1__translateFileResponse * SOAP_FMAC4 soap_get___ns1__translateFileResponse(struct soap *soap, struct __ns1__translateFileResponse *p, const char *tag, const char *type)
+{
+	if ((p = soap_in___ns1__translateFileResponse(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_default__ns1__translateFile(struct soap *soap, struct _ns1__translateFile *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+	soap_default_string(soap, &a->fileContent);
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize__ns1__translateFile(struct soap *soap, const struct _ns1__translateFile *a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+#ifndef WITH_NOIDREF
+	soap_serialize_string(soap, (char*const*)&a->fileContent);
+#endif
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__translateFile(struct soap *soap, const char *tag, int id, const struct _ns1__translateFile *a, const char *type)
+{
+	(void)soap; (void)tag; (void)id; (void)a; (void)type; /* appease -Wall -Werror */
+	if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE__ns1__translateFile), type))
+		return soap->error;
+	if (!a->fileContent)
+	{	if (soap_element_empty(soap, "fileContent"))
+			return soap->error;
+	}
+	else if (soap_out_string(soap, "fileContent", -1, (char*const*)&a->fileContent, ""))
+		return soap->error;
+	return soap_element_end_out(soap, tag);
+}
+
+SOAP_FMAC3 struct _ns1__translateFile * SOAP_FMAC4 soap_in__ns1__translateFile(struct soap *soap, const char *tag, struct _ns1__translateFile *a, const char *type)
+{
+	size_t soap_flag_fileContent = 1;
+	if (soap_element_begin_in(soap, tag, 0, NULL))
+		return NULL;
+	(void)type; /* appease -Wall -Werror */
+	a = (struct _ns1__translateFile*)soap_id_enter(soap, soap->id, a, SOAP_TYPE__ns1__translateFile, sizeof(struct _ns1__translateFile), NULL, NULL, NULL, NULL);
+	if (!a)
+		return NULL;
+	soap_default__ns1__translateFile(soap, a);
+	if (soap->body && *soap->href != '#')
+	{
+		for (;;)
+		{	soap->error = SOAP_TAG_MISMATCH;
+			if (soap_flag_fileContent && (soap->error == SOAP_TAG_MISMATCH || soap->error == SOAP_NO_TAG))
+			{	if (soap_in_string(soap, "fileContent", (char**)&a->fileContent, "xsd:string"))
+				{	soap_flag_fileContent--;
+					continue;
+				}
+			}
+			if (soap->error == SOAP_TAG_MISMATCH)
+				soap->error = soap_ignore_element(soap);
+			if (soap->error == SOAP_NO_TAG)
+				break;
+			if (soap->error)
+				return NULL;
+		}
+		if (soap_element_end_in(soap, tag))
+			return NULL;
+		if ((soap->mode & SOAP_XML_STRICT) && (!a->fileContent))
+		{	soap->error = SOAP_OCCURS;
+			return NULL;
+		}
+	}
+	else if ((soap->mode & SOAP_XML_STRICT) && *soap->href != '#')
+	{	soap->error = SOAP_OCCURS;
+		return NULL;
+	}
+	else
+	{	a = (struct _ns1__translateFile *)soap_id_forward(soap, soap->href, (void*)a, 0, SOAP_TYPE__ns1__translateFile, SOAP_TYPE__ns1__translateFile, sizeof(struct _ns1__translateFile), 0, NULL, NULL);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 struct _ns1__translateFile * SOAP_FMAC4 soap_new__ns1__translateFile(struct soap *soap, int n)
+{
+	struct _ns1__translateFile *p;
+	struct _ns1__translateFile *a = (struct _ns1__translateFile*)soap_malloc((soap), (n = (n < 0 ? 1 : n)) * sizeof(struct _ns1__translateFile));
+	for (p = a; p && n--; p++)
+		soap_default__ns1__translateFile(soap, p);
+	return a;
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put__ns1__translateFile(struct soap *soap, const struct _ns1__translateFile *a, const char *tag, const char *type)
+{
+	if (soap_out__ns1__translateFile(soap, tag ? tag : "ns1:translateFile", -2, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 struct _ns1__translateFile * SOAP_FMAC4 soap_get__ns1__translateFile(struct soap *soap, struct _ns1__translateFile *p, const char *tag, const char *type)
+{
+	if ((p = soap_in__ns1__translateFile(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+>>>>>>> Stashed changes
 #ifndef WITH_NOGLOBAL
 
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Reason(struct soap *soap, struct SOAP_ENV__Reason *const*a)
@@ -1118,6 +1417,117 @@ SOAP_FMAC3 struct SOAP_ENV__Code ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Code(
 
 #endif
 
+<<<<<<< Updated upstream
+=======
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTostring(struct soap *soap, char **const*a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+#ifndef WITH_NOIDREF
+	if (!soap_reference(soap, *a, SOAP_TYPE_string))
+		soap_serialize_string(soap, *a);
+#endif
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTostring(struct soap *soap, const char *tag, int id, char **const*a, const char *type)
+{
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE_string, NULL);
+	if (id < 0)
+		return soap->error;
+	return soap_out_string(soap, tag, id, *a, type);
+}
+
+SOAP_FMAC3 char *** SOAP_FMAC4 soap_in_PointerTostring(struct soap *soap, const char *tag, char ***a, const char *type)
+{
+	(void)type; /* appease -Wall -Werror */
+	if (soap_element_begin_in(soap, tag, 1, NULL))
+		return NULL;
+	if (!a)
+		if (!(a = (char ***)soap_malloc(soap, sizeof(char **))))
+			return NULL;
+	*a = NULL;
+	if (!soap->null && *soap->href != '#')
+	{	soap_revert(soap);
+		if (!(*a = soap_in_string(soap, tag, *a, type)))
+			return NULL;
+	}
+	else
+	{	a = (char ***)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE_string, sizeof(char *), 1, NULL);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTostring(struct soap *soap, char **const*a, const char *tag, const char *type)
+{
+	if (soap_out_PointerTostring(soap, tag ? tag : "string", -2, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 char *** SOAP_FMAC4 soap_get_PointerTostring(struct soap *soap, char ***p, const char *tag, const char *type)
+{
+	if ((p = soap_in_PointerTostring(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__translateFile(struct soap *soap, struct _ns1__translateFile *const*a)
+{
+	(void)soap; (void)a; /* appease -Wall -Werror */
+#ifndef WITH_NOIDREF
+	if (!soap_reference(soap, *a, SOAP_TYPE__ns1__translateFile))
+		soap_serialize__ns1__translateFile(soap, *a);
+#endif
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__translateFile(struct soap *soap, const char *tag, int id, struct _ns1__translateFile *const*a, const char *type)
+{
+	id = soap_element_id(soap, tag, id, *a, NULL, 0, type, SOAP_TYPE__ns1__translateFile, NULL);
+	if (id < 0)
+		return soap->error;
+	return soap_out__ns1__translateFile(soap, tag, id, *a, type);
+}
+
+SOAP_FMAC3 struct _ns1__translateFile ** SOAP_FMAC4 soap_in_PointerTo_ns1__translateFile(struct soap *soap, const char *tag, struct _ns1__translateFile **a, const char *type)
+{
+	(void)type; /* appease -Wall -Werror */
+	if (soap_element_begin_in(soap, tag, 1, NULL))
+		return NULL;
+	if (!a)
+		if (!(a = (struct _ns1__translateFile **)soap_malloc(soap, sizeof(struct _ns1__translateFile *))))
+			return NULL;
+	*a = NULL;
+	if (!soap->null && *soap->href != '#')
+	{	soap_revert(soap);
+		if (!(*a = soap_in__ns1__translateFile(soap, tag, *a, type)))
+			return NULL;
+	}
+	else
+	{	a = (struct _ns1__translateFile **)soap_id_lookup(soap, soap->href, (void**)a, SOAP_TYPE__ns1__translateFile, sizeof(struct _ns1__translateFile), 0, NULL);
+		if (soap->body && soap_element_end_in(soap, tag))
+			return NULL;
+	}
+	return a;
+}
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__translateFile(struct soap *soap, struct _ns1__translateFile *const*a, const char *tag, const char *type)
+{
+	if (soap_out_PointerTo_ns1__translateFile(soap, tag ? tag : "ns1:translateFile", -2, a, type))
+		return soap->error;
+	return soap_putindependent(soap);
+}
+
+SOAP_FMAC3 struct _ns1__translateFile ** SOAP_FMAC4 soap_get_PointerTo_ns1__translateFile(struct soap *soap, struct _ns1__translateFile **p, const char *tag, const char *type)
+{
+	if ((p = soap_in_PointerTo_ns1__translateFile(soap, tag, p, type)))
+		if (soap_getindependent(soap))
+			return NULL;
+	return p;
+}
+
+>>>>>>> Stashed changes
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize__QName(struct soap *soap, char *const*a)
 {
 	(void)soap; (void)a; /* appease -Wall -Werror */

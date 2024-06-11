@@ -382,6 +382,150 @@ SOAP_FMAC3 struct SOAP_ENV__Header * SOAP_FMAC4 soap_get_SOAP_ENV__Header(struct
 
 #endif
 
+<<<<<<< Updated upstream
+=======
+#ifndef SOAP_TYPE___ns1__translateFile_DEFINED
+#define SOAP_TYPE___ns1__translateFile_DEFINED
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns1__translateFile(struct soap*, struct __ns1__translateFile *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns1__translateFile(struct soap*, const struct __ns1__translateFile *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns1__translateFile(struct soap*, const char*, int, const struct __ns1__translateFile *, const char*);
+SOAP_FMAC3 struct __ns1__translateFile * SOAP_FMAC4 soap_in___ns1__translateFile(struct soap*, const char*, struct __ns1__translateFile *, const char*);
+
+SOAP_FMAC3 struct __ns1__translateFile * SOAP_FMAC4 soap_new___ns1__translateFile(struct soap *soap, int n);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns1__translateFile(struct soap*, const struct __ns1__translateFile *, const char*, const char*);
+
+#ifndef soap_write___ns1__translateFile
+#define soap_write___ns1__translateFile(soap, data) ( soap_free_temp(soap), soap_begin_send(soap) || (soap_serialize___ns1__translateFile(soap, data), 0) || soap_put___ns1__translateFile(soap, data, "-ns1:translateFile", "") || soap_end_send(soap), (soap)->error )
+#endif
+
+
+#ifndef soap_PUT___ns1__translateFile
+#define soap_PUT___ns1__translateFile(soap, URL, data) ( soap_free_temp(soap), soap_PUT(soap, URL, NULL, "text/xml; charset=utf-8") || (soap_serialize___ns1__translateFile(soap, data), 0) || soap_put___ns1__translateFile(soap, data, "-ns1:translateFile", "") || soap_end_send(soap) || soap_recv_empty_response(soap), soap_closesock(soap) )
+#endif
+
+
+#ifndef soap_PATCH___ns1__translateFile
+#define soap_PATCH___ns1__translateFile(soap, URL, data) ( soap_free_temp(soap), soap_PATCH(soap, URL, NULL, "text/xml; charset=utf-8") || (soap_serialize___ns1__translateFile(soap, data), 0) || soap_put___ns1__translateFile(soap, data, "-ns1:translateFile", "") || soap_end_send(soap) || soap_recv_empty_response(soap), soap_closesock(soap) )
+#endif
+
+
+#ifndef soap_POST_send___ns1__translateFile
+#define soap_POST_send___ns1__translateFile(soap, URL, data) ( soap_free_temp(soap), ( soap_POST(soap, URL, NULL, "text/xml; charset=utf-8") || (soap_serialize___ns1__translateFile(soap, data), 0) || soap_put___ns1__translateFile(soap, data, "-ns1:translateFile", "") || soap_end_send(soap) ) && soap_closesock(soap), (soap)->error )
+#endif
+
+SOAP_FMAC3 struct __ns1__translateFile * SOAP_FMAC4 soap_get___ns1__translateFile(struct soap*, struct __ns1__translateFile *, const char*, const char*);
+
+#ifndef soap_read___ns1__translateFile
+#define soap_read___ns1__translateFile(soap, data) ( ((data) ? (soap_default___ns1__translateFile(soap, (data)), 0) : 0) || soap_begin_recv(soap) || !soap_get___ns1__translateFile(soap, (data), NULL, NULL) || soap_end_recv(soap), (soap)->error )
+#endif
+
+
+#ifndef soap_GET___ns1__translateFile
+#define soap_GET___ns1__translateFile(soap, URL, data) ( soap_GET(soap, URL, NULL) || soap_read___ns1__translateFile(soap, (data)), soap_closesock(soap) )
+#endif
+
+
+#ifndef soap_POST_recv___ns1__translateFile
+#define soap_POST_recv___ns1__translateFile(soap, data) ( soap_read___ns1__translateFile(soap, (data)) || soap_closesock(soap), (soap)->error )
+#endif
+
+#endif
+
+#ifndef SOAP_TYPE___ns1__translateFileResponse_DEFINED
+#define SOAP_TYPE___ns1__translateFileResponse_DEFINED
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns1__translateFileResponse(struct soap*, struct __ns1__translateFileResponse *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns1__translateFileResponse(struct soap*, const struct __ns1__translateFileResponse *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns1__translateFileResponse(struct soap*, const char*, int, const struct __ns1__translateFileResponse *, const char*);
+SOAP_FMAC3 struct __ns1__translateFileResponse * SOAP_FMAC4 soap_in___ns1__translateFileResponse(struct soap*, const char*, struct __ns1__translateFileResponse *, const char*);
+
+SOAP_FMAC3 struct __ns1__translateFileResponse * SOAP_FMAC4 soap_new___ns1__translateFileResponse(struct soap *soap, int n);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns1__translateFileResponse(struct soap*, const struct __ns1__translateFileResponse *, const char*, const char*);
+
+#ifndef soap_write___ns1__translateFileResponse
+#define soap_write___ns1__translateFileResponse(soap, data) ( soap_free_temp(soap), soap_begin_send(soap) || (soap_serialize___ns1__translateFileResponse(soap, data), 0) || soap_put___ns1__translateFileResponse(soap, data, "-ns1:translateFileResponse", "") || soap_end_send(soap), (soap)->error )
+#endif
+
+
+#ifndef soap_PUT___ns1__translateFileResponse
+#define soap_PUT___ns1__translateFileResponse(soap, URL, data) ( soap_free_temp(soap), soap_PUT(soap, URL, NULL, "text/xml; charset=utf-8") || (soap_serialize___ns1__translateFileResponse(soap, data), 0) || soap_put___ns1__translateFileResponse(soap, data, "-ns1:translateFileResponse", "") || soap_end_send(soap) || soap_recv_empty_response(soap), soap_closesock(soap) )
+#endif
+
+
+#ifndef soap_PATCH___ns1__translateFileResponse
+#define soap_PATCH___ns1__translateFileResponse(soap, URL, data) ( soap_free_temp(soap), soap_PATCH(soap, URL, NULL, "text/xml; charset=utf-8") || (soap_serialize___ns1__translateFileResponse(soap, data), 0) || soap_put___ns1__translateFileResponse(soap, data, "-ns1:translateFileResponse", "") || soap_end_send(soap) || soap_recv_empty_response(soap), soap_closesock(soap) )
+#endif
+
+
+#ifndef soap_POST_send___ns1__translateFileResponse
+#define soap_POST_send___ns1__translateFileResponse(soap, URL, data) ( soap_free_temp(soap), ( soap_POST(soap, URL, NULL, "text/xml; charset=utf-8") || (soap_serialize___ns1__translateFileResponse(soap, data), 0) || soap_put___ns1__translateFileResponse(soap, data, "-ns1:translateFileResponse", "") || soap_end_send(soap) ) && soap_closesock(soap), (soap)->error )
+#endif
+
+SOAP_FMAC3 struct __ns1__translateFileResponse * SOAP_FMAC4 soap_get___ns1__translateFileResponse(struct soap*, struct __ns1__translateFileResponse *, const char*, const char*);
+
+#ifndef soap_read___ns1__translateFileResponse
+#define soap_read___ns1__translateFileResponse(soap, data) ( ((data) ? (soap_default___ns1__translateFileResponse(soap, (data)), 0) : 0) || soap_begin_recv(soap) || !soap_get___ns1__translateFileResponse(soap, (data), NULL, NULL) || soap_end_recv(soap), (soap)->error )
+#endif
+
+
+#ifndef soap_GET___ns1__translateFileResponse
+#define soap_GET___ns1__translateFileResponse(soap, URL, data) ( soap_GET(soap, URL, NULL) || soap_read___ns1__translateFileResponse(soap, (data)), soap_closesock(soap) )
+#endif
+
+
+#ifndef soap_POST_recv___ns1__translateFileResponse
+#define soap_POST_recv___ns1__translateFileResponse(soap, data) ( soap_read___ns1__translateFileResponse(soap, (data)) || soap_closesock(soap), (soap)->error )
+#endif
+
+#endif
+
+#ifndef SOAP_TYPE__ns1__translateFile_DEFINED
+#define SOAP_TYPE__ns1__translateFile_DEFINED
+SOAP_FMAC3 void SOAP_FMAC4 soap_default__ns1__translateFile(struct soap*, struct _ns1__translateFile *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize__ns1__translateFile(struct soap*, const struct _ns1__translateFile *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__translateFile(struct soap*, const char*, int, const struct _ns1__translateFile *, const char*);
+SOAP_FMAC3 struct _ns1__translateFile * SOAP_FMAC4 soap_in__ns1__translateFile(struct soap*, const char*, struct _ns1__translateFile *, const char*);
+
+SOAP_FMAC3 struct _ns1__translateFile * SOAP_FMAC4 soap_new__ns1__translateFile(struct soap *soap, int n);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put__ns1__translateFile(struct soap*, const struct _ns1__translateFile *, const char*, const char*);
+
+#ifndef soap_write__ns1__translateFile
+#define soap_write__ns1__translateFile(soap, data) ( soap_free_temp(soap), soap_begin_send(soap) || (soap_serialize__ns1__translateFile(soap, data), 0) || soap_put__ns1__translateFile(soap, data, "ns1:translateFile", "") || soap_end_send(soap), (soap)->error )
+#endif
+
+
+#ifndef soap_PUT__ns1__translateFile
+#define soap_PUT__ns1__translateFile(soap, URL, data) ( soap_free_temp(soap), soap_PUT(soap, URL, NULL, "text/xml; charset=utf-8") || (soap_serialize__ns1__translateFile(soap, data), 0) || soap_put__ns1__translateFile(soap, data, "ns1:translateFile", "") || soap_end_send(soap) || soap_recv_empty_response(soap), soap_closesock(soap) )
+#endif
+
+
+#ifndef soap_PATCH__ns1__translateFile
+#define soap_PATCH__ns1__translateFile(soap, URL, data) ( soap_free_temp(soap), soap_PATCH(soap, URL, NULL, "text/xml; charset=utf-8") || (soap_serialize__ns1__translateFile(soap, data), 0) || soap_put__ns1__translateFile(soap, data, "ns1:translateFile", "") || soap_end_send(soap) || soap_recv_empty_response(soap), soap_closesock(soap) )
+#endif
+
+
+#ifndef soap_POST_send__ns1__translateFile
+#define soap_POST_send__ns1__translateFile(soap, URL, data) ( soap_free_temp(soap), ( soap_POST(soap, URL, NULL, "text/xml; charset=utf-8") || (soap_serialize__ns1__translateFile(soap, data), 0) || soap_put__ns1__translateFile(soap, data, "ns1:translateFile", "") || soap_end_send(soap) ) && soap_closesock(soap), (soap)->error )
+#endif
+
+SOAP_FMAC3 struct _ns1__translateFile * SOAP_FMAC4 soap_get__ns1__translateFile(struct soap*, struct _ns1__translateFile *, const char*, const char*);
+
+#ifndef soap_read__ns1__translateFile
+#define soap_read__ns1__translateFile(soap, data) ( ((data) ? (soap_default__ns1__translateFile(soap, (data)), 0) : 0) || soap_begin_recv(soap) || !soap_get__ns1__translateFile(soap, (data), NULL, NULL) || soap_end_recv(soap), (soap)->error )
+#endif
+
+
+#ifndef soap_GET__ns1__translateFile
+#define soap_GET__ns1__translateFile(soap, URL, data) ( soap_GET(soap, URL, NULL) || soap_read__ns1__translateFile(soap, (data)), soap_closesock(soap) )
+#endif
+
+
+#ifndef soap_POST_recv__ns1__translateFile
+#define soap_POST_recv__ns1__translateFile(soap, data) ( soap_read__ns1__translateFile(soap, (data)) || soap_closesock(soap), (soap)->error )
+#endif
+
+#endif
+
+>>>>>>> Stashed changes
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Reason_DEFINED
@@ -421,6 +565,27 @@ SOAP_FMAC3 struct SOAP_ENV__Code ** SOAP_FMAC4 soap_get_PointerToSOAP_ENV__Code(
 
 #endif
 
+<<<<<<< Updated upstream
+=======
+#ifndef SOAP_TYPE_PointerTostring_DEFINED
+#define SOAP_TYPE_PointerTostring_DEFINED
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTostring(struct soap*, char **const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTostring(struct soap*, const char *, int, char **const*, const char *);
+SOAP_FMAC3 char *** SOAP_FMAC4 soap_in_PointerTostring(struct soap*, const char*, char ***, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTostring(struct soap*, char **const*, const char*, const char*);
+SOAP_FMAC3 char *** SOAP_FMAC4 soap_get_PointerTostring(struct soap*, char ***, const char*, const char*);
+#endif
+
+#ifndef SOAP_TYPE_PointerTo_ns1__translateFile_DEFINED
+#define SOAP_TYPE_PointerTo_ns1__translateFile_DEFINED
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__translateFile(struct soap*, struct _ns1__translateFile *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__translateFile(struct soap*, const char *, int, struct _ns1__translateFile *const*, const char *);
+SOAP_FMAC3 struct _ns1__translateFile ** SOAP_FMAC4 soap_in_PointerTo_ns1__translateFile(struct soap*, const char*, struct _ns1__translateFile **, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__translateFile(struct soap*, struct _ns1__translateFile *const*, const char*, const char*);
+SOAP_FMAC3 struct _ns1__translateFile ** SOAP_FMAC4 soap_get_PointerTo_ns1__translateFile(struct soap*, struct _ns1__translateFile **, const char*, const char*);
+#endif
+
+>>>>>>> Stashed changes
 #ifndef SOAP_TYPE__QName_DEFINED
 #define SOAP_TYPE__QName_DEFINED
 

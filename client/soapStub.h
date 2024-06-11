@@ -11,6 +11,10 @@ A commercial use license is available from Genivia Inc., contact@genivia.com
 --------------------------------------------------------------------------------
 */
 
+<<<<<<< Updated upstream
+=======
+#define SOAP_NAMESPACE_OF_ns1	"http://example.com/translator"
+>>>>>>> Stashed changes
 
 #ifndef soapStub_H
 #define soapStub_H
@@ -33,11 +37,52 @@ A commercial use license is available from Genivia Inc., contact@genivia.com
  *                                                                            *
 \******************************************************************************/
 
+<<<<<<< Updated upstream
 
 /* service.h:2 */
 #ifndef WITH_NOGLOBAL
 #ifndef SOAP_TYPE_SOAP_ENV__Header
 #define SOAP_TYPE_SOAP_ENV__Header (7)
+=======
+struct _ns1__translateFile;	/* service.h:161 */
+struct __ns1__translateFileResponse;	/* service.h:297 */
+struct __ns1__translateFile;	/* service.h:297 */
+
+/* service.h:161 */
+#ifndef SOAP_TYPE__ns1__translateFile
+#define SOAP_TYPE__ns1__translateFile (7)
+/* complex XML schema type 'ns1:translateFile': */
+struct _ns1__translateFile {
+        /** Required element 'fileContent' of XML schema type 'xsd:string' */
+        char *fileContent;
+};
+#endif
+
+/* service.h:297 */
+#ifndef SOAP_TYPE___ns1__translateFileResponse
+#define SOAP_TYPE___ns1__translateFileResponse (11)
+/* Wrapper: */
+struct __ns1__translateFileResponse {
+        /** Optional element 'ns1:translatedContent' of XML schema type 'xsd:string' */
+        char **ns1__translatedContent;
+};
+#endif
+
+/* service.h:297 */
+#ifndef SOAP_TYPE___ns1__translateFile
+#define SOAP_TYPE___ns1__translateFile (12)
+/* Wrapper: */
+struct __ns1__translateFile {
+        /** Optional element 'ns1:translateFile' of XML schema type 'ns1:translateFile' */
+        struct _ns1__translateFile *ns1__translateFile;
+};
+#endif
+
+/* service.h:375 */
+#ifndef WITH_NOGLOBAL
+#ifndef SOAP_TYPE_SOAP_ENV__Header
+#define SOAP_TYPE_SOAP_ENV__Header (13)
+>>>>>>> Stashed changes
 /* SOAP_ENV__Header: */
 struct SOAP_ENV__Header {
 #ifdef WITH_NOEMPTYSTRUCT
@@ -47,10 +92,17 @@ struct SOAP_ENV__Header {
 #endif
 #endif
 
+<<<<<<< Updated upstream
 /* service.h:2 */
 #ifndef WITH_NOGLOBAL
 #ifndef SOAP_TYPE_SOAP_ENV__Code
 #define SOAP_TYPE_SOAP_ENV__Code (8)
+=======
+/* service.h:375 */
+#ifndef WITH_NOGLOBAL
+#ifndef SOAP_TYPE_SOAP_ENV__Code
+#define SOAP_TYPE_SOAP_ENV__Code (14)
+>>>>>>> Stashed changes
 /* Type SOAP_ENV__Code is a recursive data type, (in)directly referencing itself through its (base or derived class) members */
 /* SOAP_ENV__Code: */
 struct SOAP_ENV__Code {
@@ -62,10 +114,17 @@ struct SOAP_ENV__Code {
 #endif
 #endif
 
+<<<<<<< Updated upstream
 /* service.h:2 */
 #ifndef WITH_NOGLOBAL
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
 #define SOAP_TYPE_SOAP_ENV__Detail (10)
+=======
+/* service.h:375 */
+#ifndef WITH_NOGLOBAL
+#ifndef SOAP_TYPE_SOAP_ENV__Detail
+#define SOAP_TYPE_SOAP_ENV__Detail (16)
+>>>>>>> Stashed changes
 /* SOAP_ENV__Detail: */
 struct SOAP_ENV__Detail {
         char *__any;
@@ -77,10 +136,17 @@ struct SOAP_ENV__Detail {
 #endif
 #endif
 
+<<<<<<< Updated upstream
 /* service.h:2 */
 #ifndef WITH_NOGLOBAL
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
 #define SOAP_TYPE_SOAP_ENV__Reason (13)
+=======
+/* service.h:375 */
+#ifndef WITH_NOGLOBAL
+#ifndef SOAP_TYPE_SOAP_ENV__Reason
+#define SOAP_TYPE_SOAP_ENV__Reason (19)
+>>>>>>> Stashed changes
 /* SOAP_ENV__Reason: */
 struct SOAP_ENV__Reason {
         /** Optional element 'SOAP-ENV:Text' of XML schema type 'xsd:string' */
@@ -89,10 +155,17 @@ struct SOAP_ENV__Reason {
 #endif
 #endif
 
+<<<<<<< Updated upstream
 /* service.h:2 */
 #ifndef WITH_NOGLOBAL
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
 #define SOAP_TYPE_SOAP_ENV__Fault (14)
+=======
+/* service.h:375 */
+#ifndef WITH_NOGLOBAL
+#ifndef SOAP_TYPE_SOAP_ENV__Fault
+#define SOAP_TYPE_SOAP_ENV__Fault (20)
+>>>>>>> Stashed changes
 /* SOAP_ENV__Fault: */
 struct SOAP_ENV__Fault {
         /** Optional element 'faultcode' of XML schema type 'xsd:QName' */
@@ -155,42 +228,89 @@ typedef char *_QName;
 
 /* struct SOAP_ENV__Fault has binding name 'SOAP_ENV__Fault' for type '' */
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
+<<<<<<< Updated upstream
 #define SOAP_TYPE_SOAP_ENV__Fault (14)
+=======
+#define SOAP_TYPE_SOAP_ENV__Fault (20)
+>>>>>>> Stashed changes
 #endif
 
 /* struct SOAP_ENV__Reason has binding name 'SOAP_ENV__Reason' for type '' */
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
+<<<<<<< Updated upstream
 #define SOAP_TYPE_SOAP_ENV__Reason (13)
+=======
+#define SOAP_TYPE_SOAP_ENV__Reason (19)
+>>>>>>> Stashed changes
 #endif
 
 /* struct SOAP_ENV__Detail has binding name 'SOAP_ENV__Detail' for type '' */
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
+<<<<<<< Updated upstream
 #define SOAP_TYPE_SOAP_ENV__Detail (10)
+=======
+#define SOAP_TYPE_SOAP_ENV__Detail (16)
+>>>>>>> Stashed changes
 #endif
 
 /* struct SOAP_ENV__Code has binding name 'SOAP_ENV__Code' for type '' */
 #ifndef SOAP_TYPE_SOAP_ENV__Code
+<<<<<<< Updated upstream
 #define SOAP_TYPE_SOAP_ENV__Code (8)
+=======
+#define SOAP_TYPE_SOAP_ENV__Code (14)
+>>>>>>> Stashed changes
 #endif
 
 /* struct SOAP_ENV__Header has binding name 'SOAP_ENV__Header' for type '' */
 #ifndef SOAP_TYPE_SOAP_ENV__Header
+<<<<<<< Updated upstream
 #define SOAP_TYPE_SOAP_ENV__Header (7)
+=======
+#define SOAP_TYPE_SOAP_ENV__Header (13)
+#endif
+
+/* struct _ns1__translateFile has binding name '_ns1__translateFile' for type '' */
+#ifndef SOAP_TYPE__ns1__translateFile
+#define SOAP_TYPE__ns1__translateFile (7)
+>>>>>>> Stashed changes
 #endif
 
 /* struct SOAP_ENV__Reason * has binding name 'PointerToSOAP_ENV__Reason' for type '' */
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Reason
+<<<<<<< Updated upstream
 #define SOAP_TYPE_PointerToSOAP_ENV__Reason (16)
+=======
+#define SOAP_TYPE_PointerToSOAP_ENV__Reason (22)
+>>>>>>> Stashed changes
 #endif
 
 /* struct SOAP_ENV__Detail * has binding name 'PointerToSOAP_ENV__Detail' for type '' */
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Detail
+<<<<<<< Updated upstream
 #define SOAP_TYPE_PointerToSOAP_ENV__Detail (15)
+=======
+#define SOAP_TYPE_PointerToSOAP_ENV__Detail (21)
+>>>>>>> Stashed changes
 #endif
 
 /* struct SOAP_ENV__Code * has binding name 'PointerToSOAP_ENV__Code' for type '' */
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Code
+<<<<<<< Updated upstream
 #define SOAP_TYPE_PointerToSOAP_ENV__Code (9)
+=======
+#define SOAP_TYPE_PointerToSOAP_ENV__Code (15)
+#endif
+
+/* char ** has binding name 'PointerTostring' for type 'xsd:string' */
+#ifndef SOAP_TYPE_PointerTostring
+#define SOAP_TYPE_PointerTostring (9)
+#endif
+
+/* struct _ns1__translateFile * has binding name 'PointerTo_ns1__translateFile' for type '' */
+#ifndef SOAP_TYPE_PointerTo_ns1__translateFile
+#define SOAP_TYPE_PointerTo_ns1__translateFile (8)
+>>>>>>> Stashed changes
 #endif
 
 /* _QName has binding name '_QName' for type 'xsd:QName' */
@@ -215,6 +335,30 @@ typedef char *_QName;
 \******************************************************************************/
 
 
+<<<<<<< Updated upstream
+=======
+/******************************************************************************\
+ *                                                                            *
+ * Server-Side Operations                                                     *
+ *                                                                            *
+\******************************************************************************/
+
+    /** Web service operation '__ns1__translateFile' implementation, should return SOAP_OK or error code */
+    SOAP_FMAC5 int SOAP_FMAC6 __ns1__translateFile(struct soap*, struct _ns1__translateFile *ns1__translateFile, char **ns1__translatedContent);
+
+/******************************************************************************\
+ *                                                                            *
+ * Server-Side Skeletons to Invoke Service Operations                         *
+ *                                                                            *
+\******************************************************************************/
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve(struct soap*);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve_request(struct soap*);
+
+SOAP_FMAC5 int SOAP_FMAC6 soap_serve___ns1__translateFile(struct soap*);
+
+>>>>>>> Stashed changes
 #endif
 
 /* End of soapStub.h */

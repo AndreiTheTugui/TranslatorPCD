@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="http://example.com/translator"
+                  targetNamespace="http://example.com/translator">
+
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://example.com/translator">
+            <xsd:element name="translateFile">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="fileContent" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="translatedContent" type="xsd:string"/>
+        </xsd:schema>
+    </wsdl:types>
+
+    <wsdl:message name="TranslateFileRequest">
+        <wsdl:part name="parameters" element="tns:translateFile"/>
+    </wsdl:message>
+    <wsdl:message name="TranslateFileResponse">
+        <wsdl:part name="result" element="tns:translatedContent"/>
+    </wsdl:message>
+
+    <wsdl:portType name="TranslatorPortType">
+        <wsdl:operation name="translateFile">
+            <wsdl:input message="tns:TranslateFileRequest"/>
+            <wsdl:output message="tns:TranslateFileResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="TranslatorBinding" type="tns:TranslatorPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="translateFile">
+            <soap:operation soapAction="http://example.com/translator/translateFile"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="TranslatorService">
+        <wsdl:port name="TranslatorPort" binding="tns:TranslatorBinding">
+            <soap:address location="http://example.com/translator/service"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>
