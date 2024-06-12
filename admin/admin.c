@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
 
 #define MAX_LANGUAGES 10
 #define BUFFER_SIZE 256
@@ -8,6 +12,8 @@
 
 #define LANGUAGES_FILE "languages.txt"
 #define BLOCKED_USERS_FILE "blocked_users.txt"
+#define SERVER_IP "127.0.0.1"
+#define PORT 12346
 
 typedef struct {
     char languages[MAX_LANGUAGES][BUFFER_SIZE];
@@ -26,11 +32,12 @@ void block_client(Admin *admin, int client_id);
 void unblock_client(Admin *admin, int client_id);
 void set_max_clients(Admin *admin, int max_clients);
 void display_menu();
+void show_connected_clients();
 
 int main() {
     Admin admin;
     admin.num_languages = 0;
-    admin.max_clients = MAX_CLIENTS; 
+    admin.max_clients = MAX_CLIENTS;
     memset(admin.blocked_clients, 0, sizeof(admin.blocked_clients));
 
     load_languages(&admin);
@@ -65,7 +72,10 @@ int main() {
             printf("Enter max clients: ");
             scanf("%d", &max_clients);
             set_max_clients(&admin, max_clients);
-        } else if (strcmp(command, "exit") == 0) {
+        } else if (strcmp(command, "show_connected_clients") == 0) {
+            show_connected_clients();
+        } else if (strcmp(command, "exit") == 0)
+{
             save_languages(&admin);
             save_blocked_clients(&admin);
             break;
@@ -208,5 +218,37 @@ void display_menu() {
     printf("  block_client - Block a client\n");
     printf("  unblock_client - Unblock a client\n");
     printf("  set_max_clients - Set the maximum number of clients\n");
+    printf("  show_connected_clients - Show the number of connected clients\n");
     printf("  exit - Exit the program\n");
+}
+
+void show_connected_clients() {
+    int sock;
+    struct sockaddr_in server_addr;
+    char buffer[BUFFER_SIZE];
+
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) {
+        perror("Socket creation failed");
+        return;
+    }
+
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(PORT);
+    server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
+
+    if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
+        perror("Connection to server failed");
+        close(sock);
+        return;
+    }
+
+
+    strcpy(buffer, "GET_CLIENT_COUNT");
+    send(sock, buffer, strlen(buffer) + 1, 0);
+
+    recv(sock, buffer, BUFFER_SIZE, 0);
+    printf("Number of connected clients: %s\n", buffer);
+
+    close(sock);
 }
