@@ -8,7 +8,7 @@
 
 #define SOCKET_PORT 8080
 #define BUFFER_SIZE 1024
-#define UNIX_SOCKET_PATH "/tmp/unix.sock"
+#define UNIX_SOCKET_PATH "/tmp/translator.sock"
 
 void* handle_client(void* client_socket) {
     int socket = *(int*)client_socket;
