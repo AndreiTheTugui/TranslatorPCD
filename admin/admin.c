@@ -4,14 +4,22 @@
 
 #define MAX_LANGUAGES 10
 #define BUFFER_SIZE 256
+#define MAX_CLIENTS 100
+
+#define LANGUAGES_FILE "languages.txt"
+#define BLOCKED_USERS_FILE "blocked_users.txt"
 
 typedef struct {
     char languages[MAX_LANGUAGES][BUFFER_SIZE];
-    int blocked_clients[MAX_LANGUAGES];
+    int blocked_clients[MAX_CLIENTS];
     int num_languages;
     int max_clients;
 } Admin;
 
+void load_languages(Admin *admin);
+void save_languages(Admin *admin);
+void load_blocked_clients(Admin *admin);
+void save_blocked_clients(Admin *admin);
 void add_language(Admin *admin, const char *language);
 void remove_language(Admin *admin, const char *language);
 void block_client(Admin *admin, int client_id);
@@ -22,8 +30,11 @@ void display_menu();
 int main() {
     Admin admin;
     admin.num_languages = 0;
-    admin.max_clients = 10;
+    admin.max_clients = MAX_CLIENTS; 
     memset(admin.blocked_clients, 0, sizeof(admin.blocked_clients));
+
+    load_languages(&admin);
+    load_blocked_clients(&admin);
 
     char command[BUFFER_SIZE];
     char language[BUFFER_SIZE];
@@ -55,6 +66,8 @@ int main() {
             scanf("%d", &max_clients);
             set_max_clients(&admin, max_clients);
         } else if (strcmp(command, "exit") == 0) {
+            save_languages(&admin);
+            save_blocked_clients(&admin);
             break;
         } else {
             printf("Invalid command\n");
@@ -64,11 +77,85 @@ int main() {
     return 0;
 }
 
+void load_languages(Admin *admin) {
+    FILE *file = fopen(LANGUAGES_FILE, "r");
+    if (file == NULL) {
+        return; 
+    }
+
+    char line[BUFFER_SIZE];
+    while (fgets(line, sizeof(line), file) && admin->num_languages < MAX_LANGUAGES) {
+        line[strcspn(line, "\n")] = 0; 
+        strcpy(admin->languages[admin->num_languages], line);
+        admin->num_languages++;
+    }
+
+    fclose(file);
+}
+
+void save_languages(Admin *admin) {
+    FILE *file = fopen(LANGUAGES_FILE, "w");
+    if (file == NULL) {
+        perror("Could not open languages file for writing");
+        return;
+    }
+
+    for (int i = 0; i < admin->num_languages; i++) {
+        fprintf(file, "%s\n", admin->languages[i]);
+    }
+
+    fclose(file);
+}
+
+void load_blocked_clients(Admin *admin) {
+    FILE *file = fopen(BLOCKED_USERS_FILE, "r");
+    if (file == NULL) {
+        return; 
+    }
+
+    int client_id;
+    while (fscanf(file, "%d", &client_id) == 1) {
+        if (client_id < MAX_CLIENTS) {
+            admin->blocked_clients[client_id] = 1;
+        }
+    }
+
+    fclose(file);
+}
+
+void save_blocked_clients(Admin *admin) {
+    FILE *file = fopen(BLOCKED_USERS_FILE, "w");
+    if (file == NULL) {
+        perror("Error opening blocked users file for writing");
+        return;
+    }
+
+    for (int i = 0; i < admin->max_clients; i++) {
+        if (admin->blocked_clients[i]) {
+            if (fprintf(file, "%d\n", i) < 0) {
+                perror("Error writing to blocked users file");
+                fclose(file); 
+                return;
+            }
+        }
+    }
+
+    fclose(file);
+}
+
 void add_language(Admin *admin, const char *language) {
+    for (int i = 0; i < admin->num_languages; i++) {
+        if (strcmp(admin->languages[i], language) == 0) {
+            printf("Language %s already exists\n", language);
+            return;
+        }
+    }
+
     if (admin->num_languages < MAX_LANGUAGES) {
         strcpy(admin->languages[admin->num_languages], language);
         admin->num_languages++;
         printf("Language %s added\n", language);
+        save_languages(admin);
     } else {
         printf("Language list is full\n");
     }
@@ -82,6 +169,7 @@ void remove_language(Admin *admin, const char *language) {
             }
             admin->num_languages--;
             printf("Language %s removed\n", language);
+            save_languages(admin);
             return;
         }
     }
@@ -89,18 +177,20 @@ void remove_language(Admin *admin, const char *language) {
 }
 
 void block_client(Admin *admin, int client_id) {
-    if (client_id < MAX_LANGUAGES) {
+    if (client_id < admin->max_clients) {
         admin->blocked_clients[client_id] = 1;
         printf("Client %d blocked\n", client_id);
+        save_blocked_clients(admin);
     } else {
         printf("Invalid client ID\n");
     }
 }
 
 void unblock_client(Admin *admin, int client_id) {
-    if (client_id < MAX_LANGUAGES) {
+    if (client_id < admin->max_clients) {
         admin->blocked_clients[client_id] = 0;
         printf("Client %d unblocked\n", client_id);
+        save_blocked_clients(admin);
     } else {
         printf("Invalid client ID\n");
     }
@@ -120,4 +210,3 @@ void display_menu() {
     printf("  set_max_clients - Set the maximum number of clients\n");
     printf("  exit - Exit the program\n");
 }
-
