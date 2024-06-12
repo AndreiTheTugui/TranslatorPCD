@@ -5,8 +5,6 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <sys/un.h>
-#include "client/soapH.h"
-#include "client/service.nsmap"
 
 #define SOCKET_PORT 8080
 #define BUFFER_SIZE 1024
@@ -37,7 +35,7 @@ void start_tcp_server() {
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
+    address.sin_port = htons(SOCKET_PORT);
 
     if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
         perror("bind failed");
@@ -117,7 +115,7 @@ void start_unix_server() {
     }
 }
 
-void* handle_soap_client(void* soap_instance) {
+/*void* handle_soap_client(void* soap_instance) {
     struct soap* soap = (struct soap*)soap_instance;
     soap_serve(soap);
     soap_destroy(soap);
@@ -151,18 +149,18 @@ void start_soap_server() {
     }
 
     soap_done(&soap);
-}
+}*/
 
 int main() {
     pthread_t tcp_thread, unix_thread, soap_thread;
 
     pthread_create(&tcp_thread, NULL, (void* (*)(void*))start_tcp_server, NULL);
     pthread_create(&unix_thread, NULL, (void* (*)(void*))start_unix_server, NULL);
-    pthread_create(&soap_thread, NULL, (void* (*)(void*))start_soap_server, NULL);
+    //pthread_create(&soap_thread, NULL, (void* (*)(void*))start_soap_server, NULL);
 
     pthread_join(tcp_thread, NULL);
     pthread_join(unix_thread, NULL);
-    pthread_join(soap_thread, NULL);
+    //pthread_join(soap_thread, NULL);
 
     return 0;
 }

@@ -13,6 +13,7 @@
 
 #define SERV_TCP_PORT 8080
 #define MAXLINE 512
+#define MAX_CLIENTS 50
 
 
 int main(int argc, char *argv[])
@@ -31,11 +32,13 @@ int main(int argc, char *argv[])
     serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     serv_addr.sin_port = htons(SERV_TCP_PORT);
 
-    if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
         perror("EROARE server: nu pot sa asignez un nume adresei locale");
+    }
+
     printf("Waiting for client connections...\n");
 
-    listen(sockfd, 10);
+    listen(sockfd, MAX_CLIENTS);
 
     // loop infinit pentru asteptarea conexiunii cu un client si crearea unui proces copil pentru fiecare client
     for (;;)
