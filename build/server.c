@@ -9,6 +9,11 @@
 #define SOCKET_PORT 8080
 #define BUFFER_SIZE 1024
 #define UNIX_SOCKET_PATH "/tmp/translator.sock"
+#define LANGUAGES_FILE "../files/languages.txt"
+#define BLOCKED_USERS_FILE "../files/blocked_users.txt"
+
+int active_clients = 0;
+int max_clients = 50;
 
 void* handle_client(void* client_socket) {
     int socket = *(int*)client_socket;
@@ -42,7 +47,7 @@ void start_tcp_server() {
         exit(EXIT_FAILURE);
     }
 
-    if (listen(server_fd, 3) < 0) {
+    if (listen(server_fd, max_clients) < 0) {
         perror("listen");
         exit(EXIT_FAILURE);
     }
@@ -52,6 +57,7 @@ void start_tcp_server() {
             perror("accept");
             exit(EXIT_FAILURE);
         }
+        active_clients++;
         int* client_socket = malloc(sizeof(int));
         *client_socket = new_socket;
         pthread_t thread_id;
@@ -65,11 +71,36 @@ void* handle_unix_client(void* client_socket) {
     free(client_socket);
 
     char buffer[BUFFER_SIZE];
-    read(socket, buffer, BUFFER_SIZE);
-    printf("Unix socket received: %s\n", buffer);
-    send(socket, "Hello from Unix server", strlen("Hello from Unix server"), 0);
+    char send_buffer[BUFFER_SIZE];
+    while (1) {
+        memset(buffer, 0, sizeof(buffer));
+        int bytes_read = read(socket, buffer, BUFFER_SIZE);
+        if (bytes_read <= 0) {
+            break;
+        }
+        printf("Unix socket received: %s\n", buffer);
+        if (strncmp(buffer, "add_language", strlen("add_language")) == 0) {
+            FILE *languages_file = fopen(LANGUAGES_FILE, "w");
+            if (languages_file == NULL) {
+                perror("Could not open languages file for writing");
+                return NULL;
+            }
 
-    close(socket);
+            char* language = buffer + strlen("add_language") + 1;
+
+            fprintf(languages_file, "%s\n", language);
+
+            fclose(languages_file);
+        }
+        else if (strcmp(buffer, "show_connected_clients") == 0) {
+            snprintf(send_buffer, sizeof(send_buffer), "%d", active_clients);
+            send(socket, send_buffer, strlen(send_buffer), 0);
+        } else if (strcmp(buffer, "exit") == 0) {
+            active_clients--;
+            break;
+        }
+    }
+
     return NULL;
 }
 
@@ -107,6 +138,7 @@ void start_unix_server() {
             close(unix_fd);
             exit(EXIT_FAILURE);
         }
+        active_clients++;
         int* client_socket = malloc(sizeof(int));
         *client_socket = new_socket;
         pthread_t thread_id;
@@ -115,52 +147,14 @@ void start_unix_server() {
     }
 }
 
-/*void* handle_soap_client(void* soap_instance) {
-    struct soap* soap = (struct soap*)soap_instance;
-    soap_serve(soap);
-    soap_destroy(soap);
-    soap_end(soap);
-    soap_free(soap);
-    return NULL;
-}
-
-void start_soap_server() {
-    struct soap soap;
-    soap_init(&soap);
-
-    if (!soap_valid_socket(soap_bind(&soap, NULL, 8081, 100))) {
-        soap_print_fault(&soap, stderr);
-        exit(EXIT_FAILURE);
-    }
-
-    while (1) {
-        int client_socket = soap_accept(&soap);
-        if (!soap_valid_socket(client_socket)) {
-            soap_print_fault(&soap, stderr);
-            continue;
-        }
-
-        struct soap* soap_instance = soap_copy(&soap);
-        soap_instance->socket = client_socket;
-
-        pthread_t thread_id;
-        pthread_create(&thread_id, NULL, handle_soap_client, soap_instance);
-        pthread_detach(thread_id);
-    }
-
-    soap_done(&soap);
-}*/
-
 int main() {
     pthread_t tcp_thread, unix_thread, soap_thread;
 
     pthread_create(&tcp_thread, NULL, (void* (*)(void*))start_tcp_server, NULL);
     pthread_create(&unix_thread, NULL, (void* (*)(void*))start_unix_server, NULL);
-    //pthread_create(&soap_thread, NULL, (void* (*)(void*))start_soap_server, NULL);
 
     pthread_join(tcp_thread, NULL);
     pthread_join(unix_thread, NULL);
-    //pthread_join(soap_thread, NULL);
 
     return 0;
 }
