@@ -19,8 +19,6 @@ int request_handler(void *cls, struct MHD_Connection *connection, const char *ur
     }
 
     if (*upload_data_size != 0) {
-        // Here we should save the upload data to a file or a buffer
-        // This example just prints the uploaded data
         printf("Received data: %s\n", upload_data);
         *upload_data_size = 0;
         return MHD_YES;

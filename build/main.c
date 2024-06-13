@@ -5,10 +5,14 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <sys/un.h>
+#include <microhttpd.h>
+#include <sys/stat.h>
+#include <time.h>
 
 #define SOCKET_PORT 8080
 #define BUFFER_SIZE 1024
 #define UNIX_SOCKET_PATH "/tmp/translator.sock"
+#define HTTP_PORT 8888
 
 void* handle_client(void* client_socket) {
     int socket = *(int*)client_socket;
@@ -16,7 +20,7 @@ void* handle_client(void* client_socket) {
 
     char buffer[BUFFER_SIZE];
     read(socket, buffer, BUFFER_SIZE);
-    printf("Received: %s\n", buffer);
+    printf("Received from TCP client: %s\n", buffer);
     send(socket, "Hello from server", strlen("Hello from server"), 0);
 
     close(socket);
@@ -66,7 +70,7 @@ void* handle_unix_client(void* client_socket) {
 
     char buffer[BUFFER_SIZE];
     read(socket, buffer, BUFFER_SIZE);
-    printf("Unix socket received: %s\n", buffer);
+    printf("Received from Unix client: %s\n", buffer);
     send(socket, "Hello from Unix server", strlen("Hello from Unix server"), 0);
 
     close(socket);
@@ -115,52 +119,95 @@ void start_unix_server() {
     }
 }
 
-/*void* handle_soap_client(void* soap_instance) {
-    struct soap* soap = (struct soap*)soap_instance;
-    soap_serve(soap);
-    soap_destroy(soap);
-    soap_end(soap);
-    soap_free(soap);
+enum MHD_Result request_handler(void *cls, struct MHD_Connection *connection, const char *url, 
+                   const char *method, const char *version, const char *upload_data,
+                   size_t *upload_data_size, void **con_cls) {
+    static char buffer[BUFFER_SIZE];
+    static size_t buffer_pos = 0;
+    static FILE *uploaded_file = NULL;
+    static char filename[BUFFER_SIZE];
+
+    if (strcmp(method, "POST") != 0) {
+        return MHD_NO;
+    }
+
+    if (*con_cls == NULL) {
+        *con_cls = buffer;
+        buffer_pos = 0;
+        sprintf(filename, "/tmp/uploaded_file_%ld", time(NULL));
+        printf("Creating file: %s\n", filename);
+        uploaded_file = fopen(filename, "wb");
+        if (uploaded_file == NULL) {
+            perror("fopen");
+            return MHD_NO;
+        }
+        return MHD_YES;
+    }
+
+    if (*upload_data_size != 0) {
+        printf("Writing data to file: %s\n", filename);
+        fwrite(upload_data, 1, *upload_data_size, uploaded_file);
+        *upload_data_size = 0;
+        return MHD_YES;
+    } else {
+        fclose(uploaded_file);
+        printf("Finished writing to file: %s\n", filename);
+
+        struct stat file_stat;
+        if (stat(filename, &file_stat) == -1) {
+            perror("stat");
+            return MHD_NO;
+        }
+
+        char date_buf[BUFFER_SIZE];
+        strftime(date_buf, BUFFER_SIZE, "%Y-%m-%d %H:%M:%S", localtime(&file_stat.st_mtime));
+        printf("File modification date and time: %s\n", date_buf);
+
+        FILE *file = fopen(filename, "r");
+        if (file == NULL) {
+            perror("fopen");
+            return MHD_NO;
+        }
+
+        printf("File content:\n");
+        while (fgets(buffer, BUFFER_SIZE, file) != NULL) {
+            printf("%s", buffer);
+        }
+        fclose(file);
+
+        const char *response_text = "File uploaded and read successfully";
+        struct MHD_Response *response = MHD_create_response_from_buffer(strlen(response_text), 
+                                                                        (void *)response_text, MHD_RESPMEM_PERSISTENT);
+        int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+        MHD_destroy_response(response);
+        return ret;
+    }
+}
+
+void* start_http_server(void* arg) {
+    struct MHD_Daemon *daemon;
+
+    daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, HTTP_PORT, NULL, NULL, 
+                              &request_handler, NULL, MHD_OPTION_END);
+    if (NULL == daemon) return NULL;
+
+    printf("HTTP Server running on port %d\n", HTTP_PORT);
+    getchar();
+
+    MHD_stop_daemon(daemon);
     return NULL;
 }
 
-void start_soap_server() {
-    struct soap soap;
-    soap_init(&soap);
-
-    if (!soap_valid_socket(soap_bind(&soap, NULL, 8081, 100))) {
-        soap_print_fault(&soap, stderr);
-        exit(EXIT_FAILURE);
-    }
-
-    while (1) {
-        int client_socket = soap_accept(&soap);
-        if (!soap_valid_socket(client_socket)) {
-            soap_print_fault(&soap, stderr);
-            continue;
-        }
-
-        struct soap* soap_instance = soap_copy(&soap);
-        soap_instance->socket = client_socket;
-
-        pthread_t thread_id;
-        pthread_create(&thread_id, NULL, handle_soap_client, soap_instance);
-        pthread_detach(thread_id);
-    }
-
-    soap_done(&soap);
-}*/
-
 int main() {
-    pthread_t tcp_thread, unix_thread, soap_thread;
+    pthread_t tcp_thread, unix_thread, http_thread;
 
     pthread_create(&tcp_thread, NULL, (void* (*)(void*))start_tcp_server, NULL);
     pthread_create(&unix_thread, NULL, (void* (*)(void*))start_unix_server, NULL);
-    //pthread_create(&soap_thread, NULL, (void* (*)(void*))start_soap_server, NULL);
+    pthread_create(&http_thread, NULL, start_http_server, NULL);
 
     pthread_join(tcp_thread, NULL);
     pthread_join(unix_thread, NULL);
-    //pthread_join(soap_thread, NULL);
+    pthread_join(http_thread, NULL);
 
     return 0;
 }
