@@ -42,7 +42,7 @@ int main() {
         
         command[strcspn(command, "\n")] = '\0';
 
-        if (strcmp(command, "translate") == 0) {
+        if (strncmp(command, "translate ", strlen("translate ")) == 0) {
             send(sock, command, strlen(command), 0);
             //read(sock, buffer, BUFFER_SIZE);
             fprintf(stdout, "Text translatat cu succes!\n");
