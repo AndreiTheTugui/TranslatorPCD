@@ -13,10 +13,10 @@ int sock = 0;
 
 void helpCommand() {
     fprintf(stdout, "Comenzi:\n");
-    fprintf(stdout, "  add_language - Adauga o limba noua pentru traducere\n");
-    fprintf(stdout, "  remove_language - Sterge o limba existenta pentru a nu traducere\n");
-    fprintf(stdout, "  block_client - Blocheaza clientul de a mai folosi aplicatia\n");
-    fprintf(stdout, "  unblock_client - Ofera din nou acces clientului blocat pe aplicatie\n");
+    fprintf(stdout, "  add_language <limba> - Adauga o limba noua pentru traducere\n");
+    fprintf(stdout, "  remove_language <limba> - Sterge o limba existenta pentru a nu traducere\n");
+    fprintf(stdout, "  block_client <utilizator> - Blocheaza clientul de a mai folosi aplicatia\n");
+    fprintf(stdout, "  unblock_client <utilizator> - Ofera din nou acces clientului blocat pe aplicatie\n");
     fprintf(stdout, "  show_connected_clients - Arata numarul de conexiuni active\n");
     fprintf(stdout, "  help - Eu sunt :)! Afisez comenzile disponibile\n");
     fprintf(stdout, "  exit - Iesire program\n");
