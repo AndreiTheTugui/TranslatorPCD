@@ -46,7 +46,7 @@ void start_tcp_server() {
         exit(EXIT_FAILURE);
     }
 
-    if (listen(server_fd, 3) < 0) {
+    if (listen(server_fd, max_clients) < 0) {
         perror("listen");
         exit(EXIT_FAILURE);
     }
@@ -56,6 +56,7 @@ void start_tcp_server() {
             perror("accept");
             exit(EXIT_FAILURE);
         }
+        active_clients++;
         int* client_socket = malloc(sizeof(int));
         *client_socket = new_socket;
         pthread_t thread_id;
@@ -69,11 +70,36 @@ void* handle_unix_client(void* client_socket) {
     free(client_socket);
 
     char buffer[BUFFER_SIZE];
-    read(socket, buffer, BUFFER_SIZE);
-    printf("Received from Unix client: %s\n", buffer);
-    send(socket, "Hello from Unix server", strlen("Hello from Unix server"), 0);
+    char send_buffer[BUFFER_SIZE];
+    while (1) {
+        memset(buffer, 0, sizeof(buffer));
+        int bytes_read = read(socket, buffer, BUFFER_SIZE);
+        if (bytes_read <= 0) {
+            break;
+        }
+        printf("Unix socket received: %s\n", buffer);
+        if (strncmp(buffer, "add_language", strlen("add_language")) == 0) {
+            FILE *languages_file = fopen(LANGUAGES_FILE, "w");
+            if (languages_file == NULL) {
+                perror("Could not open languages file for writing");
+                return NULL;
+            }
 
-    close(socket);
+            char* language = buffer + strlen("add_language") + 1;
+
+            fprintf(languages_file, "%s\n", language);
+
+            fclose(languages_file);
+        }
+        else if (strcmp(buffer, "show_connected_clients") == 0) {
+            snprintf(send_buffer, sizeof(send_buffer), "%d", active_clients);
+            send(socket, send_buffer, strlen(send_buffer), 0);
+        } else if (strcmp(buffer, "exit") == 0) {
+            active_clients--;
+            break;
+        }
+    }
+
     return NULL;
 }
 
@@ -111,6 +137,7 @@ void start_unix_server() {
             close(unix_fd);
             exit(EXIT_FAILURE);
         }
+        active_clients++;
         int* client_socket = malloc(sizeof(int));
         *client_socket = new_socket;
         pthread_t thread_id;
