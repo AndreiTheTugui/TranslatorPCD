@@ -9,21 +9,34 @@
 #include <sys/stat.h>
 #include <time.h>
 
-#define SOCKET_PORT 8080
+#define SOCKET_PORT 8081
 #define BUFFER_SIZE 1024
 #define UNIX_SOCKET_PATH "/tmp/translator.sock"
+#define LANGUAGES_FILE "../files/languages.txt"
+#define BLOCKED_USERS_FILE "../files/blocked_users.txt"
 #define HTTP_PORT 8888
+
+int active_clients = 0;
+int max_clients = 50;
 
 void* handle_client(void* client_socket) {
     int socket = *(int*)client_socket;
     free(client_socket);
 
     char buffer[BUFFER_SIZE];
-    read(socket, buffer, BUFFER_SIZE);
-    printf("Received from TCP client: %s\n", buffer);
-    send(socket, "Hello from server", strlen("Hello from server"), 0);
+    while (1) {
+        memset(buffer, 0, sizeof(buffer));
+        int bytes_read = read(socket, buffer, BUFFER_SIZE);
+        if (bytes_read <= 0) {
+            break;
+        }
+        printf("TCP socket received: %s\n", buffer);
+        read(socket, buffer, BUFFER_SIZE);
+        if (strcmp(buffer, "translate") == 0) {
+            send(socket, "Text translatat cu succes!", strlen("Text translatat cu succes!"), 0);
+        }
+    }
 
-    close(socket);
     return NULL;
 }
 
@@ -33,7 +46,7 @@ void start_tcp_server() {
     int addrlen = sizeof(address);
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-        perror("socket failed");
+        perror("Eroare TCP socket");
         exit(EXIT_FAILURE);
     }
 
@@ -42,18 +55,18 @@ void start_tcp_server() {
     address.sin_port = htons(SOCKET_PORT);
 
     if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
-        perror("bind failed");
+        perror("Eroare bind socket");
         exit(EXIT_FAILURE);
     }
 
     if (listen(server_fd, max_clients) < 0) {
-        perror("listen");
+        perror("Eroare listen socket");
         exit(EXIT_FAILURE);
     }
 
     while (1) {
         if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
-            perror("accept");
+            perror("Eroare accept socket");
             exit(EXIT_FAILURE);
         }
         active_clients++;
@@ -78,18 +91,49 @@ void* handle_unix_client(void* client_socket) {
             break;
         }
         printf("Unix socket received: %s\n", buffer);
-        if (strncmp(buffer, "add_language", strlen("add_language")) == 0) {
-            FILE *languages_file = fopen(LANGUAGES_FILE, "w");
+        if (strncmp(buffer, "add_language ", strlen("add_language ")) == 0) {
+            FILE *languages_file = fopen(LANGUAGES_FILE, "a");
             if (languages_file == NULL) {
-                perror("Could not open languages file for writing");
+                perror("Eroare languages.txt");
                 return NULL;
             }
 
-            char* language = buffer + strlen("add_language") + 1;
+            char* language = buffer + strlen("add_language ");
 
             fprintf(languages_file, "%s\n", language);
 
             fclose(languages_file);
+        }
+        else if (strncmp(buffer, "remove_language ", strlen("remove_language ")) == 0) {
+            FILE *languages_file = fopen(LANGUAGES_FILE, "w");
+            if (languages_file == NULL) {
+                perror("Eroare languages.txt");
+                return NULL;
+            }
+
+            fclose(languages_file);
+        }
+        else if (strncmp(buffer, "block_client ", strlen("block_client ")) == 0) {
+            FILE *blocked_clients_file = fopen(BLOCKED_USERS_FILE, "a");
+            if (blocked_clients_file == NULL) {
+                perror("Eroare blocked_users.txt");
+                return NULL;
+            }
+
+            char* client_user = buffer + strlen("block_client ");
+
+            fprintf(blocked_clients_file, "%s\n", client_user);
+
+            fclose(blocked_clients_file);
+        }
+        else if (strncmp(buffer, "unblock_client ", strlen("unblock_client ")) == 0) {
+            FILE *blocked_clients_file = fopen(BLOCKED_USERS_FILE, "w");
+            if (blocked_clients_file == NULL) {
+                perror("Eroare blocked_users.txt");
+                return NULL;
+            }
+
+            fclose(blocked_clients_file);
         }
         else if (strcmp(buffer, "show_connected_clients") == 0) {
             snprintf(send_buffer, sizeof(send_buffer), "%d", active_clients);
@@ -109,7 +153,7 @@ void start_unix_server() {
     int addrlen = sizeof(address);
 
     if ((unix_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == 0) {
-        perror("unix socket failed");
+        perror("Eroare UNIX socket");
         exit(EXIT_FAILURE);
     }
 
@@ -120,20 +164,20 @@ void start_unix_server() {
     unlink(UNIX_SOCKET_PATH);
 
     if (bind(unix_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
-        perror("bind failed");
+        perror("Eroare bind socket");
         close(unix_fd);
         exit(EXIT_FAILURE);
     }
 
     if (listen(unix_fd, 3) < 0) {
-        perror("listen");
+        perror("Eroare listen socket");
         close(unix_fd);
         exit(EXIT_FAILURE);
     }
 
     while (1) {
         if ((new_socket = accept(unix_fd, NULL, NULL)) < 0) {
-            perror("accept");
+            perror("Eroare accept socket");
             close(unix_fd);
             exit(EXIT_FAILURE);
         }

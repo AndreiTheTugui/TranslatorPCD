@@ -63,9 +63,21 @@ int main() {
         
         command[strcspn(command, "\n")] = '\0';
 
-        if (strncmp(command, "add_language", sizeof("add_language")) == 0) {
+        if (strncmp(command, "add_language ", strlen("add_language ")) == 0) {
             send(sock, command, strlen(command), 0);
             fprintf(stdout, "Limba a fost adaugata cu succes!\n");
+        }
+        else if (strncmp(command, "remove_language ", strlen("remove_language ")) == 0) {
+            send(sock, command, strlen(command), 0);
+            fprintf(stdout, "Limba a fost stearsa cu succes!\n");
+        }
+        else if (strncmp(command, "block_client ", strlen("block_client ")) == 0) {
+            send(sock, command, strlen(command), 0);
+            fprintf(stdout, "Clientul a fost blocat cu succes!\n");
+        }
+        else if (strncmp(command, "unblock_client ", strlen("unblock_client ")) == 0) {
+            send(sock, command, strlen(command), 0);
+            fprintf(stdout, "Clientul blocat poate folosi din nou aplicatia!\n");
         }
         else if (strcmp(command, "show_connected_clients") == 0) {
             send(sock, "show_connected_clients", strlen("show_connected_clients"), 0);

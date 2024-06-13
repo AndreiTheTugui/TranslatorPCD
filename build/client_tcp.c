@@ -4,18 +4,19 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-#define PORT 8080
+#define PORT 8081
 #define SERVER_ADDRESS "127.0.0.1"
 #define BUFFER_SIZE 1024
 
 int main() {
     int sock = 0;
     struct sockaddr_in serv_addr;
+    char command[BUFFER_SIZE];
     char buffer[BUFFER_SIZE] = {0};
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        printf("\n Socket creation error \n");
-        return -1;
+        perror("Eroare creare socket");
+        exit(EXIT_FAILURE);
     }
 
     serv_addr.sin_family = AF_INET;
@@ -31,11 +32,26 @@ int main() {
         return -1;
     }
 
-    send(sock, "Hello from TCP client", strlen("Hello from TCP client"), 0);
-    printf("Message sent to server\n");
+    for (;;) {
+        fprintf(stdout, "> ");
 
-    read(sock, buffer, BUFFER_SIZE);
-    printf("Message from server: %s\n", buffer);
+        if (fgets(command, sizeof(command), stdin) == NULL) {
+            perror("Eroare la input");
+            continue;
+        }
+        
+        command[strcspn(command, "\n")] = '\0';
+
+        if (strcmp(command, "translate") == 0) {
+            send(sock, command, strlen(command), 0);
+            //read(sock, buffer, BUFFER_SIZE);
+            fprintf(stdout, "Text translatat cu succes!\n");
+        } else {
+            break;
+        }
+        memset(command, 0, BUFFER_SIZE);
+        memset(buffer, 0, BUFFER_SIZE);
+    }
 
     close(sock);
     return 0;
